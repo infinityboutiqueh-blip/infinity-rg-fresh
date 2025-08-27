@@ -147,7 +147,8 @@ export default function InfinityRGSite() {
         </div>
       </Section>
 
-      {/* ... keep SERVICES, WHY US, ABOUT, CONTACT, FOOTER unchanged ... */}
+      {/* SERVICES */}
+      {/* Keep SERVICES, WHY US, ABOUT, CONTACT, FOOTER exactly like before */}
     </div>
   );
 }
