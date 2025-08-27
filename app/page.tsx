@@ -13,14 +13,17 @@ import {
   Search,
   CircleDollarSign,
 } from "lucide-react";
+import QuickEnquiryForm from "../components/QuickEnquiryForm";
 
-// Temporary API placeholder (DB disabled)
-export async function POST(req: Request) {
-  return new Response(JSON.stringify({ message: "Database disabled for now" }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+// ✅ Main Page component
+export default function InfinityRGSite() {
+  return (
+    <div className="min-h-screen bg-slate-900 text-white">
+      {/* your JSX here */}
+    </div>
+  );
 }
+
 
 
 // Section component
