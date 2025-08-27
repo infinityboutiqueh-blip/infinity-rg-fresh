@@ -1,0 +1,26 @@
+# Ignore old API files
+app/api.ts
+app/api.tsx
+
+
+# dependencies
+/node_modules
+
+# next.js build output
+/.next
+
+# local env files
+.env
+.env.local
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# system files
+.DS_Store
+
+# sensitive
+token.txt
