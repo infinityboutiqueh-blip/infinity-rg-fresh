@@ -14,6 +14,18 @@ import {
 } from "lucide-react";
 import QuickEnquiryForm from "../components/QuickEnquiryForm";
 
+{/* ✅ Quick Enquiry Form */}
+<motion.div
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.1, duration: 0.6 }}
+>
+  <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6">
+    <div className="text-sm text-slate-400 mb-2">Quick enquiry</div>
+    <QuickEnquiryForm />
+  </div>
+</motion.div>
+
 // Section component
 const Section = ({
   id,
