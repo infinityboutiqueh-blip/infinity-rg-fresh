@@ -12,7 +12,8 @@ import {
   Search,
   CircleDollarSign,
 } from "lucide-react";
-import QuickEnquiryForm from "../components/QuickEnquiryForm"; // ✅ import form
+import QuickEnquiryForm from "../components/QuickEnquiryForm.tsx";
+
 
 // Section component
 const Section = ({
