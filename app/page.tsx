@@ -12,19 +12,7 @@ import {
   Search,
   CircleDollarSign,
 } from "lucide-react";
-import QuickEnquiryForm from "../components/QuickEnquiryForm";
-
-{/* ✅ Quick Enquiry Form */}
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.1, duration: 0.6 }}
->
-  <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6">
-    <div className="text-sm text-slate-400 mb-2">Quick enquiry</div>
-    <QuickEnquiryForm />
-  </div>
-</motion.div>
+import QuickEnquiryForm from "../components/QuickEnquiryForm"; // ✅ import form
 
 // Section component
 const Section = ({
@@ -88,7 +76,11 @@ export default function InfinityRGSite() {
       {/* HERO */}
       <Section id="home" className="pt-14 pb-12">
         <div className="grid lg:grid-cols-2 gap-8 items-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
               Smart property solutions for landlords & investors
             </h1>
@@ -101,7 +93,9 @@ export default function InfinityRGSite() {
               <button className="px-4 py-2 rounded-2xl bg-blue-600 hover:bg-blue-500 flex items-center">
                 Request a call <ArrowRight className="ml-2 w-4 h-4" />
               </button>
-              <a href="#services" className="text-sm font-medium underline underline-offset-4">Explore services</a>
+              <a href="#services" className="text-sm font-medium underline underline-offset-4">
+                Explore services
+              </a>
               {/* ✅ Buy eBook Button */}
               <a
                 href="https://pay.hotmart.com/G101548209U?checkoutMode=2"
@@ -122,10 +116,14 @@ export default function InfinityRGSite() {
           </motion.div>
 
           {/* ✅ Quick Enquiry Form */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.6 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.6 }}
+          >
             <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6">
               <div className="text-sm text-slate-400 mb-2">Quick enquiry</div>
-              <QuickEnquiryForm />
+              <QuickEnquiryForm /> {/* 👈 FORM HERE */}
             </div>
           </motion.div>
         </div>
@@ -205,7 +203,7 @@ export default function InfinityRGSite() {
         </div>
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6">
-            {/* ✅ Quick Enquiry Form again in Contact section */}
+            {/* ✅ Enquiry form */}
             <QuickEnquiryForm />
           </div>
           <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6 space-y-4">
