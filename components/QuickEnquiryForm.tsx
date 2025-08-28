@@ -19,24 +19,25 @@ export default function QuickEnquiryForm() {
     };
 
     emailjs
-  .send(
-    "service_z69pgtc",     // ✅ Your Service ID
-    "template_lx6hntq",    // ✅ Your Template ID
-    templateParams,
-    "ujulBYfyVDwYUQPcM"    // ✅ Your Public Key
-  )
-  .then(
-    () => {
-      setStatus("✅ Enquiry sent successfully!");
-      setName("");
-      setEmail("");
-      setMessage("");
-    },
-    (error) => {
-      console.error("FAILED...", error);
-      setStatus("❌ Failed to send enquiry. Please try again.");
-    }
-  );
+      .send(
+        "service_z69pgtc",   // ✅ Your EmailJS service ID
+        "template_lx6hntq",  // ✅ Your template ID
+        templateParams,
+        "ujulBYfyVDwYUQPcM"  // ✅ Your public key
+      )
+      .then(
+        () => {
+          setStatus("✅ Enquiry sent successfully!");
+          setName("");
+          setEmail("");
+          setMessage("");
+        },
+        (error) => {
+          console.error("FAILED...", error);
+          setStatus("❌ Failed to send enquiry. Please try again.");
+        }
+      );
+  };
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-3">
