@@ -20,7 +20,7 @@ export default function QuickEnquiryForm() {
 
     emailjs
       .send(
-        "service_z69pgtc",   // ✅ Your EmailJS service ID
+        "service_z69pgtc",   // ✅ Your service ID
         "template_lx6hntq",  // ✅ Your template ID
         templateParams,
         "ujulBYfyVDwYUQPcM"  // ✅ Your public key
