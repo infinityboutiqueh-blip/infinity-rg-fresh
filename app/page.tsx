@@ -15,7 +15,6 @@ import {
   X,
 } from "lucide-react";
 
-// Section component
 const Section = ({
   id,
   children,
@@ -33,19 +32,28 @@ const Section = ({
   </section>
 );
 
-// NavLink component
-const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+const NavLink = ({
+  href,
+  children,
+  onClick,
+}: {
+  href: string;
+  children: React.ReactNode;
+  onClick?: () => void;
+}) => (
   <a
     href={href}
-    className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
+    onClick={onClick}
+    className="block md:inline text-sm font-medium text-slate-300 hover:text-white transition-colors"
   >
     {children}
   </a>
 );
 
-// ✅ Main Page
 export default function InfinityRGSite() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleClose = () => setIsOpen(false);
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -78,7 +86,7 @@ export default function InfinityRGSite() {
           Get in touch →
         </a>
 
-        {/* Mobile Menu Toggle */}
+        {/* Mobile Toggle */}
         <button
           className="md:hidden text-white"
           onClick={() => setIsOpen(!isOpen)}
@@ -87,7 +95,7 @@ export default function InfinityRGSite() {
         </button>
       </header>
 
-      {/* Mobile Nav Dropdown with Animation */}
+      {/* Mobile Dropdown */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -97,13 +105,24 @@ export default function InfinityRGSite() {
             transition={{ duration: 0.3 }}
             className="md:hidden bg-slate-950 text-white px-6 py-4 space-y-4 shadow-lg"
           >
-            <NavLink href="#services">Services</NavLink>
-            <NavLink href="#whyus">Why Us</NavLink>
-            <NavLink href="#process">Process</NavLink>
-            <NavLink href="#about">About</NavLink>
-            <NavLink href="#contact">Contact</NavLink>
+            <NavLink href="#services" onClick={handleClose}>
+              Services
+            </NavLink>
+            <NavLink href="#whyus" onClick={handleClose}>
+              Why Us
+            </NavLink>
+            <NavLink href="#process" onClick={handleClose}>
+              Process
+            </NavLink>
+            <NavLink href="#about" onClick={handleClose}>
+              About
+            </NavLink>
+            <NavLink href="#contact" onClick={handleClose}>
+              Contact
+            </NavLink>
             <a
               href="#contact"
+              onClick={handleClose}
               className="block bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium"
             >
               Get in touch →
@@ -111,46 +130,6 @@ export default function InfinityRGSite() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* HERO */}
-      <Section id="home" className="pt-14 pb-12">
-        <div className="grid lg:grid-cols-2 gap-8 items-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-              Smart property solutions for landlords & investors
-            </h1>
-            <p className="mt-4 text-lg text-slate-300">
-              Infinity RG helps you buy, manage, and maximize property assets from
-              buy-to-let and Airbnb to buy-refurbish-sell with clear reporting and trusted partners.
-            </p>
-
-            {/* Buttons Row */}
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <button className="px-4 py-2 rounded-2xl bg-blue-600 hover:bg-blue-500 flex items-center">
-                Request a call <ArrowRight className="ml-2 w-4 h-4" />
-              </button>
-              <a
-                href="#services"
-                className="text-sm font-medium underline underline-offset-4"
-              >
-                Explore services
-              </a>
-              <a
-                href="https://pay.hotmart.com/G101548209U?checkoutMode=2"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-2xl text-sm font-semibold shadow-md shadow-green-900/40 transition-transform hover:scale-105 ml-4"
-              >
-                Buy eBook →
-              </a>
-            </div>
-          </motion.div>
-        </div>
-      </Section>
     </div>
   );
 }
