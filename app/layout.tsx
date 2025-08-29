@@ -1,12 +1,3 @@
-// app/layout.tsx
-import "./globals.css";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Infinity RG",
-  description: "Smart property solutions for landlords & investors",
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -15,8 +6,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* ✅ Favicon */}
-        <link rel="icon" href="/favicon-white.ico" />
+        {/* ✅ Correct favicon */}
+        <link rel="icon" href="/favicon-white.ico" sizes="any" />
+        <link rel="icon" type="image/png" href="/favicon-white.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon-new.png" />
       </head>
       <body>{children}</body>
     </html>
