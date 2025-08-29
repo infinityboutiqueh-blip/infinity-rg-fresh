@@ -14,8 +14,6 @@ import {
 } from "lucide-react";
 import QuickEnquiryForm from "../components/QuickEnquiryForm";
 
-
-
 // Section component
 const Section = ({
   id,
@@ -92,12 +90,20 @@ export default function InfinityRGSite() {
 
             {/* Buttons Row */}
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              <button className="px-4 py-2 rounded-2xl bg-blue-600 hover:bg-blue-500 flex items-center">
+              {/* ✅ Calendly link added */}
+              <a
+                href="https://calendly.com/infinityboutiqueh/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 rounded-2xl bg-blue-600 hover:bg-blue-500 flex items-center"
+              >
                 Request a call <ArrowRight className="ml-2 w-4 h-4" />
-              </button>
+              </a>
+
               <a href="#services" className="text-sm font-medium underline underline-offset-4">
                 Explore services
               </a>
+
               {/* ✅ Buy eBook Button */}
               <a
                 href="https://pay.hotmart.com/G101548209U?checkoutMode=2"
