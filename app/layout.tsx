@@ -5,9 +5,9 @@ export const metadata: Metadata = {
   title: "Infinity RG",
   description: "Smart property solutions for landlords & investors",
   icons: {
-    icon: "/favicon.ico",                // fallback
-    shortcut: "/favicon-32x32.png",      // browser tab
-    apple: "/apple-touch-icon.png",      // iOS
+    icon: "/favicon-new.ico",
+    shortcut: "/favicon-new-32x32.png",
+    apple: "/apple-touch-icon-new.png",
   },
 };
 
@@ -19,9 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon-32x32.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/favicon-new.ico" sizes="any" />
+        <link rel="icon" href="/favicon-new-32x32.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon-new.png" />
       </head>
       <body>{children}</body>
     </html>
