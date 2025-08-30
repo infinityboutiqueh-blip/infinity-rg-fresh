@@ -51,11 +51,12 @@ export default function InfinityRGSite() {
         <div className="flex items-center space-x-3">
           <div className="w-40 h-auto relative">
 
-         <img
+       <img
   src="/logo.png"
   alt="Infinity RG"
-  className="h-12 w-auto object-contain border border-red-500"
+  className="h-12 w-auto object-contain"
 />
+
           </div>
         </div>
 
