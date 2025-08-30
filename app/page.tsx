@@ -198,7 +198,7 @@ export default function InfinityRGSite() {
             </a>
           </div>
 
-          <div>
+         <div>
   <div className="text-slate-400">Instagram</div>
   <a
     className="font-medium underline text-white"
@@ -209,6 +209,7 @@ export default function InfinityRGSite() {
     @InfinityRG
   </a>
 </div>
+
 
           <div>
             <div className="text-slate-400">Response hours</div>
