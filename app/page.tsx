@@ -199,16 +199,16 @@ export default function InfinityRGSite() {
           </div>
 
           <div>
-            <div className="text-slate-400">Instagram</div>
-            <a
-              className="font-medium underline text-white"
-              href="https://www.instagram.com/infinityrg_?igsh=MWE1eHdwMW8wdnM4NQ%3D%3D&utm_source=qr"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              @InfinityRG
-            </a>
-          </div>
+  <div className="text-slate-400">Instagram</div>
+  <a
+    className="font-medium underline text-white"
+    href="https://www.instagram.com/infinityrg_/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    @InfinityRG
+  </a>
+</div>
 
           <div>
             <div className="text-slate-400">Response hours</div>
