@@ -50,14 +50,12 @@ export default function InfinityRGSite() {
       <header className="bg-slate-950 text-white px-6 py-4 flex items-center justify-between shadow-md">
         <div className="flex items-center space-x-3">
           <div className="w-40 h-auto relative">
+
          <img
   src="/logo.png"
   alt="Infinity RG"
   className="h-12 w-auto object-contain border border-red-500"
 />
-
-
-
           </div>
         </div>
 
