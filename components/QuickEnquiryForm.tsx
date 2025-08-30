@@ -18,13 +18,13 @@ export default function QuickEnquiryForm() {
       message: message,
     };
 
-    emailjs
-      .send(
-        "service_z69pgtc",   // ✅ Your service ID
-        "template_lx6hntq",  // ✅ Your template ID
-        templateParams,
-        "ujulBYfyVDwYUQPcM"  // ✅ Your public key
-      )
+    emailjs.send(
+  "service_z69pgtc",     // ✅ Your Service ID
+  "template_lx6hntq",    // ✅ Your Template ID
+  templateParams,
+  "ujulBYfyVDwYUQPcM"    // ✅ Your Public Key
+)
+
       .then(
         () => {
           setStatus("✅ Enquiry sent successfully!");
@@ -33,9 +33,10 @@ export default function QuickEnquiryForm() {
           setMessage("");
         },
         (error) => {
-          console.error("FAILED...", error);
-          setStatus("❌ Failed to send enquiry. Please try again.");
-        }
+  console.error("FAILED...", error.text || error);
+  setStatus("❌ Failed to send enquiry. Check console for details.");
+}
+
       );
   };
 
