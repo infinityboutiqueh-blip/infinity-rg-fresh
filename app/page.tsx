@@ -90,7 +90,7 @@ export default function InfinityRGSite() {
 
             {/* Buttons Row */}
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              {/* ✅ Calendly link added */}
+              {/* ✅ Calendly link */}
               <a
                 href="https://calendly.com/infinityboutiqueh/30min"
                 target="_blank"
@@ -131,7 +131,7 @@ export default function InfinityRGSite() {
           >
             <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6">
               <div className="text-sm text-slate-400 mb-2">Quick enquiry</div>
-              <QuickEnquiryForm /> {/* 👈 FORM HERE */}
+              <QuickEnquiryForm />
             </div>
           </motion.div>
         </div>
@@ -190,20 +190,25 @@ export default function InfinityRGSite() {
         <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6 grid md:grid-cols-3 gap-4 text-sm">
           <div>
             <div className="text-slate-400">Registered email</div>
-            <a className="font-medium underline text-white" href="mailto:contactestates@infinityrg.co.uk">contactestates@infinityrg.co.uk</a>
+            <a
+              className="font-medium underline text-white"
+              href="mailto:contactestates@infinityrg.co.uk"
+            >
+              contactestates@infinityrg.co.uk
+            </a>
           </div>
+
           <div>
-            <div>
-  <div className="text-slate-400">Instagram</div>
-  <a
-    className="font-medium underline text-white"
-    href="https://www.instagram.com/infinityrg_?igsh=MWE1eHdwMW8wdnM4NQ%3D%3D&utm_source=qr"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    @InfinityRG
-  </a>
-</div>
+            <div className="text-slate-400">Instagram</div>
+            <a
+              className="font-medium underline text-white"
+              href="https://www.instagram.com/infinityrg_?igsh=MWE1eHdwMW8wdnM4NQ%3D%3D&utm_source=qr"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @InfinityRG
+            </a>
+          </div>
 
           <div>
             <div className="text-slate-400">Response hours</div>
@@ -220,7 +225,6 @@ export default function InfinityRGSite() {
         </div>
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6">
-            {/* ✅ Enquiry form */}
             <QuickEnquiryForm />
           </div>
           <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6 space-y-4">
@@ -228,7 +232,12 @@ export default function InfinityRGSite() {
               <Phone className="w-5 h-5 mt-1"/>
               <div>
                 <div className="text-sm text-slate-400">Prefer email?</div>
-                <a className="font-medium underline text-white" href="mailto:contactestates@infinityrg.co.uk">contactestates@infinityrg.co.uk</a>
+                <a
+                  className="font-medium underline text-white"
+                  href="mailto:contactestates@infinityrg.co.uk"
+                >
+                  contactestates@infinityrg.co.uk
+                </a>
               </div>
             </div>
             <div className="text-sm text-slate-400">We typically reply the same business day.</div>
