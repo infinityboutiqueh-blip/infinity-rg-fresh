@@ -46,33 +46,33 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 export default function InfinityRGSite() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
-      {/* HEADER */}
-     <header className="bg-slate-950 text-white px-6 py-4 flex items-center justify-between shadow-md">
-  <div className="flex items-center space-x-3">
-    <div className="h-20 md:h-28 w-auto relative">
-      <img
-        src="/logo.png"
-        alt="Infinity RG"
-        className="h-full w-auto object-contain"
-      />
-    </div>
-  </div>
+    {/* HEADER */}
+      <header className="bg-slate-950 text-white px-6 py-4 flex items-center justify-between shadow-md">
+        <div className="flex items-center space-x-3">
+          <div className="w-40 h-auto relative">
+            <img
+              src="/logo.png"
+              alt="Infinity RG"
+              className="max-h-30 w-auto object-contain"
+            />
+          </div>
+        </div>
 
-  <nav className="hidden md:flex space-x-6 text-sm font-medium">
-    <NavLink href="#services">Services</NavLink>
-    <NavLink href="#whyus">Why Us</NavLink>
-    <NavLink href="#process">Process</NavLink>
-    <NavLink href="#about">About</NavLink>
-    <NavLink href="#contact">Contact</NavLink>
-  </nav>
+        <nav className="hidden md:flex space-x-6 text-sm font-medium">
+          <NavLink href="#services">Services</NavLink>
+          <NavLink href="#whyus">Why Us</NavLink>
+          <NavLink href="#process">Process</NavLink>
+          <NavLink href="#about">About</NavLink>
+          <NavLink href="#contact">Contact</NavLink>
+        </nav>
+        <a
+          href="#contact"
+          className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium"
+        >
+          Get in touch →
+        </a>
+      </header>
 
-  <a
-    href="#contact"
-    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium"
-  >
-    Get in touch →
-  </a>
-</header>
 
 
       {/* HERO */}
