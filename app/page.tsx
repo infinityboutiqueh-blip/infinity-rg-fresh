@@ -46,7 +46,7 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
 export default function InfinityRGSite() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
-    {/* HEADER */}
+      {/* HEADER */}
       <header className="bg-slate-950 text-white px-6 py-4 flex items-center justify-between shadow-md">
         <div className="flex items-center space-x-3">
           <div className="w-40 h-auto relative">
@@ -72,8 +72,6 @@ export default function InfinityRGSite() {
           Get in touch →
         </a>
       </header>
-
-
 
       {/* HERO */}
       <Section id="home" className="pt-14 pb-12">
@@ -180,6 +178,29 @@ export default function InfinityRGSite() {
         </div>
       </Section>
 
+      {/* ✅ PROCESS */}
+      <Section id="process" className="py-12">
+        <div className="mb-8">
+          <h2 className="text-3xl font-semibold tracking-tight">Our Process</h2>
+          <p className="text-slate-400 mt-2">
+            A simple, step-by-step process designed to make investing and managing property smooth and transparent.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-4 gap-5">
+          {[
+            { step: "1. Consultation", desc: "We understand your goals and financial situation." },
+            { step: "2. Deal Sourcing", desc: "We identify the right opportunities tailored to your needs." },
+            { step: "3. Management", desc: "From tenant find to compliance and maintenance." },
+            { step: "4. Reporting", desc: "Clear, transparent updates so you always stay in control." },
+          ].map((item, i) => (
+            <div key={i} className="bg-slate-900 border border-slate-700 text-white rounded-2xl shadow-md shadow-blue-900/40 p-4">
+              <div className="text-lg font-semibold">{item.step}</div>
+              <p className="text-sm text-slate-300 mt-2">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
       {/* ABOUT */}
       <Section id="about" className="py-12">
         <div className="mb-8">
@@ -192,27 +213,12 @@ export default function InfinityRGSite() {
         <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6 grid md:grid-cols-3 gap-4 text-sm">
           <div>
             <div className="text-slate-400">Registered email</div>
-            <a
-              className="font-medium underline text-white"
-              href="mailto:contactestates@infinityrg.co.uk"
-            >
-              contactestates@infinityrg.co.uk
-            </a>
+            <a className="font-medium underline text-white" href="mailto:contactestates@infinityrg.co.uk">contactestates@infinityrg.co.uk</a>
           </div>
-
-         <div>
-  <div className="text-slate-400">Instagram</div>
-  <a
-    className="font-medium underline text-white"
-    href="https://www.instagram.com/infinityrg_/"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    @InfinityRG
-  </a>
-</div>
-
-
+          <div>
+            <div className="text-slate-400">Instagram</div>
+            <a className="font-medium underline text-white" href="https://www.instagram.com/infinityrg_/" target="_blank" rel="noopener noreferrer">@InfinityRG</a>
+          </div>
           <div>
             <div className="text-slate-400">Response hours</div>
             <div className="font-medium">Mon–Fri, 09:00–17:30 CET</div>
@@ -235,12 +241,7 @@ export default function InfinityRGSite() {
               <Phone className="w-5 h-5 mt-1"/>
               <div>
                 <div className="text-sm text-slate-400">Prefer email?</div>
-                <a
-                  className="font-medium underline text-white"
-                  href="mailto:contactestates@infinityrg.co.uk"
-                >
-                  contactestates@infinityrg.co.uk
-                </a>
+                <a className="font-medium underline text-white" href="mailto:contactestates@infinityrg.co.uk">contactestates@infinityrg.co.uk</a>
               </div>
             </div>
             <div className="text-sm text-slate-400">We typically reply the same business day.</div>
