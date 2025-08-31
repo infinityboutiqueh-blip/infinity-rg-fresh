@@ -251,14 +251,15 @@ export default function InfinityRGSite() {
 
       {/* FOOTER */}
       <footer className="border-t border-slate-700 mt-12">
-        <Section className="py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
-          <div>© {new Date().getFullYear()} Infinity RG. All rights reserved.</div>
-          <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-white">Privacy</a>
-            <a href="#" className="hover:text-white">Terms</a>
-          </div>
-        </Section>
-      </footer>
+  <Section className="py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
+    <div>© {new Date().getFullYear()} Infinity RG. All rights reserved.</div>
+    <div className="flex items-center gap-6">
+      <a href="/privacy" className="hover:text-white">Privacy</a>
+      <a href="/terms" className="hover:text-white">Terms</a>
+    </div>
+  </Section>
+</footer>
+
     </div>
   );
 }
