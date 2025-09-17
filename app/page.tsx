@@ -12,31 +12,120 @@ import {
   Search,
   CircleDollarSign,
 } from "lucide-react";
-import QuickEnquiryForm from "../components/QuickEnquiryForm";
 
-/* ---- Booking card config ---- */
+// --- Property config (put your real listing URLs here) ---
 const PROPERTIES = [
   {
-    id: "Ivrea",
-    name: "Fratelli Cervi Apartment",
-    airbnbRoomId: "12345678", // TODO: replace with your real Airbnb room ID
+    id: "ivrea",
+    name: "Ivrea Apartment",
+    airbnbUrl: "https://www.airbnb.com/rooms/XXXXXXXX", // e.g. /rooms/12345678
+    bookingUrl: "https://www.booking.com/hotel/xx/YOUR-PROPERTY.html",
     maxGuests: 6,
-    minNights: 2,
   },
-  // Add more properties here if needed
+  // Add more properties if you have them
 ];
 
-function buildAirbnbUrl(
-  roomId: string,
-  checkIn?: string,
-  checkOut?: string,
-  guests?: number
-) {
-  const params = new URLSearchParams();
-  if (checkIn) params.set("check_in", checkIn);
-  if (checkOut) params.set("check_out", checkOut);
-  if (guests && guests > 0) params.set("adults", String(guests));
-  return `https://www.airbnb.com/rooms/${roomId}?${params.toString()}`;
+function buildAirbnbUrl(baseUrl: string, checkIn?: string, checkOut?: string, adults?: number) {
+  try {
+    const url = new URL(baseUrl);
+    if (checkIn) url.searchParams.set("check_in", checkIn);
+    if (checkOut) url.searchParams.set("check_out", checkOut);
+    if (adults && adults > 0) url.searchParams.set("adults", String(adults));
+    return url.toString();
+  } catch {
+    // Fallback if a full URL isn't provided yet
+    const params = new URLSearchParams();
+    if (checkIn) params.set("check_in", checkIn);
+    if (checkOut) params.set("check_out", checkOut);
+    if (adults && adults > 0) params.set("adults", String(adults));
+    return `${baseUrl}?${params.toString()}`;
+  }
+}
+
+function buildBookingUrl(baseUrl: string, checkIn?: string, checkOut?: string, adults?: number) {
+  // Booking.com commonly accepts: checkin, checkout, group_adults, no_rooms, group_children
+  try {
+    const url = new URL(baseUrl);
+    if (checkIn) url.searchParams.set("checkin", checkIn);
+    if (checkOut) url.searchParams.set("checkout", checkOut);
+    if (adults && adults > 0) url.searchParams.set("group_adults", String(adults));
+    url.searchParams.set("no_rooms", "1");
+    url.searchParams.set("group_children", "0");
+    return url.toString();
+  } catch {
+    const params = new URLSearchParams();
+    if (checkIn) params.set("checkin", checkIn);
+    if (checkOut) params.set("checkout", checkOut);
+    if (adults && adults > 0) params.set("group_adults", String(adults));
+    params.set("no_rooms", "1");
+    params.set("group_children", "0");
+    return `${baseUrl}?${params.toString()}`;
+  }
+}
+
+// --- Simple in-file fallback for QuickEnquiryForm (avoids missing import path errors) ---
+function QuickEnquiryForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [sent, setSent] = useState(false);
+
+  function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const subject = encodeURIComponent("Website enquiry from InfinityRG");
+    const body = encodeURIComponent(`Name: ${name}
+Email: ${email}
+
+${message}`);
+    window.location.href = `mailto:contactestates@infinityrg.co.uk?subject=${subject}&body=${body}`;
+    setSent(true);
+  }
+
+  return (
+    <form onSubmit={onSubmit} className="space-y-3">
+      <div>
+        <label className="block text-sm text-slate-300">Name</label>
+        <input
+          required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="mt-1 w-full rounded-2xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+          placeholder="Your name"
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-slate-300">Email</label>
+        <input
+          required
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="mt-1 w-full rounded-2xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+          placeholder="you@example.com"
+        />
+      </div>
+      <div>
+        <label className="block text-sm text-slate-300">Message</label>
+        <textarea
+          required
+          rows={4}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="mt-1 w-full rounded-2xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+          placeholder="Tell us about your plans"
+        />
+      </div>
+      <button
+        type="submit"
+        className="inline-flex items-center justify-center rounded-2xl bg-blue-600 hover:bg-blue-500 px-5 py-2.5 text-sm font-semibold transition shadow-lg shadow-blue-600/20"
+      >
+        Send enquiry
+      </button>
+      {sent && (
+        <p className="text-xs text-emerald-400">Opening your email client… if nothing happens, email us at contactestates@infinityrg.co.uk</p>
+      )}
+    </form>
+  );
 }
 
 // Section component
@@ -73,23 +162,17 @@ const NavLink = ({
   </a>
 );
 
-// ✅ Main Page
+// ✅ Main Page (professional & interactive card like earlier layout)
 export default function InfinityRGSite() {
-  // State for the booking card
   const [propertyId, setPropertyId] = useState(PROPERTIES[0].id);
   const [checkIn, setCheckIn] = useState<string>("");
   const [checkOut, setCheckOut] = useState<string>("");
   const [guests, setGuests] = useState<number>(2);
 
-  const property = useMemo(
-    () => PROPERTIES.find((p) => p.id === propertyId)!,
-    [propertyId]
-  );
+  const property = useMemo(() => PROPERTIES.find(p => p.id === propertyId)!, [propertyId]);
 
-  const airbnbUrl = useMemo(
-    () => buildAirbnbUrl(property.airbnbRoomId, checkIn, checkOut, guests),
-    [property, checkIn, checkOut, guests]
-  );
+  const airbnbUrl = useMemo(() => buildAirbnbUrl(property.airbnbUrl, checkIn, checkOut, guests), [property, checkIn, checkOut, guests]);
+  const bookingUrl = useMemo(() => buildBookingUrl(property.bookingUrl, checkIn, checkOut, guests), [property, checkIn, checkOut, guests]);
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -122,7 +205,7 @@ export default function InfinityRGSite() {
 
       {/* HERO */}
       <Section id="home" className="pt-14 pb-12">
-        <div className="grid lg:grid-cols-2 gap-8 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 items-start">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -182,46 +265,48 @@ export default function InfinityRGSite() {
             </div>
           </motion.div>
 
-          {/* ✅ Booking Card (replaces Quick Enquiry) */}
+          {/* ✅ Booking Card: interactive, professional layout */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.6 }}
           >
-            <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6">
-              <div className="text-lg font-semibold">Check availability</div>
-              <div className="text-sm text-slate-400">Secure checkout on Airbnb</div>
+            <div className="relative rounded-2xl border border-slate-700/60 bg-[#0f172a] p-6 shadow-2xl shadow-black/40 ring-1 ring-white/5">
+              <h3 className="text-lg font-semibold text-slate-100">Book your stay</h3>
+              <p className="mt-1 text-sm text-slate-400">Select details here, complete booking on Airbnb or Booking.com</p>
 
-              {/* Property */}
-              <label className="block mt-4 text-sm text-slate-300">Property</label>
-              <select
-                className="mt-2 w-full rounded-2xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                value={propertyId}
-                onChange={(e) => setPropertyId(e.target.value)}
-              >
-                {PROPERTIES.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name}
-                  </option>
-                ))}
-              </select>
+              {/* Property (only show if multiple) */}
+              {PROPERTIES.length > 1 && (
+                <div className="mt-4">
+                  <label className="block text-sm text-slate-300">Property</label>
+                  <select
+                    className="mt-2 w-full rounded-xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    value={propertyId}
+                    onChange={(e) => setPropertyId(e.target.value)}
+                  >
+                    {PROPERTIES.map((p) => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               {/* Dates */}
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm text-slate-300">Check-in</label>
+                  <label className="block text-sm text-slate-300">Check‑in</label>
                   <input
                     type="date"
-                    className="mt-2 w-full rounded-2xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="mt-2 w-full rounded-xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                     value={checkIn}
                     onChange={(e) => setCheckIn(e.target.value)}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-slate-300">Check-out</label>
+                  <label className="block text-sm text-slate-300">Check‑out</label>
                   <input
                     type="date"
-                    className="mt-2 w-full rounded-2xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="mt-2 w-full rounded-xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
                     value={checkOut}
                     onChange={(e) => setCheckOut(e.target.value)}
                   />
@@ -236,44 +321,45 @@ export default function InfinityRGSite() {
                     className="h-10 w-10 rounded-xl border border-slate-700 bg-slate-900/70 text-lg leading-none hover:bg-slate-800"
                     onClick={() => setGuests((g) => Math.max(1, g - 1))}
                     aria-label="Decrease guests"
+                    type="button"
                   >
                     −
                   </button>
-                  <div className="min-w-[3rem] text-center font-semibold">
-                    {guests}
-                  </div>
+                  <div className="min-w-[3rem] text-center font-semibold">{guests}</div>
                   <button
                     className="h-10 w-10 rounded-xl border border-slate-700 bg-slate-900/70 text-lg leading-none hover:bg-slate-800"
                     onClick={() => setGuests((g) => Math.min(property.maxGuests, g + 1))}
                     aria-label="Increase guests"
+                    type="button"
                   >
                     +
                   </button>
-                  <span className="text-xs text-slate-400">
-                    max {property.maxGuests}
-                  </span>
+                  <span className="text-xs text-slate-400">max {property.maxGuests}</span>
                 </div>
               </div>
 
-              {/* CTA */}
-              <a
-                href={airbnbUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold hover:bg-blue-500 transition shadow-lg shadow-blue-600/25"
-              >
-                Book on Airbnb →
-              </a>
-
-              {/* Secondary link */}
-              <div className="mt-3 text-center">
+              {/* CTAs */}
+              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <a
-                  href="#contact"
-                  className="text-xs text-slate-400 hover:text-slate-300"
+                  href={airbnbUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold hover:bg-blue-500 transition shadow-lg shadow-blue-600/25"
                 >
-                  Prefer to talk? Ask a question
+                  Book on Airbnb →
+                </a>
+                <a
+                  href={bookingUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 px-5 py-3 text-sm font-semibold hover:bg-slate-700 transition border border-slate-700"
+                >
+                  Book on Booking.com →
                 </a>
               </div>
+
+              {/* Subtle glow */}
+              <div className="pointer-events-none absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br from-blue-600/10 via-transparent to-violet-500/10 blur-2xl" />
             </div>
           </motion.div>
         </div>
@@ -438,7 +524,7 @@ export default function InfinityRGSite() {
       <Section id="contact" className="py-12">
         <div className="mb-8">
           <h2 className="text-3xl font-semibold tracking-tight">Let’s talk</h2>
-        <p className="text-slate-400 mt-2">
+          <p className="text-slate-400 mt-2">
             Tell us what you’re planning and we’ll get back to you within one
             business day.
           </p>
