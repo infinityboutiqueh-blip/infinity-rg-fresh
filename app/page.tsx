@@ -18,32 +18,49 @@ const PROPERTIES = [
   {
     id: "ivrea",
     name: "Ivrea Apartment",
-    airbnbUrl: "https://www.airbnb.com/rooms/XXXXXXXX", // e.g. /rooms/12345678
-    bookingUrl: "https://www.booking.com/hotel/xx/YOUR-PROPERTY.html",
+    // ✅ Real Airbnb listing
+    airbnbUrl: "https://www.airbnb.co.uk/rooms/1302830852131699994",
+    // ✅ Clean Booking.com URL (works with your deeplink params below)
+    bookingUrl: "https://www.booking.com/hotel/it/infinity-house-ivrea.en-gb.html",
     maxGuests: 6,
   },
   // Add more properties if you have them
 ];
 
-function buildAirbnbUrl(baseUrl: string, checkIn?: string, checkOut?: string, adults?: number) {
+// Build a clean Airbnb deeplink from a base URL.
+// Accepts: check_in, check_out, adults
+function buildAirbnbUrl(
+  baseUrl: string,
+  checkIn?: string,
+  checkOut?: string,
+  adults?: number
+) {
   try {
     const url = new URL(baseUrl);
     if (checkIn) url.searchParams.set("check_in", checkIn);
     if (checkOut) url.searchParams.set("check_out", checkOut);
     if (adults && adults > 0) url.searchParams.set("adults", String(adults));
+    // Optional attribution tag for your analytics
+    url.searchParams.set("source", "infinityrg_site");
     return url.toString();
   } catch {
-    // Fallback if a full URL isn't provided yet
     const params = new URLSearchParams();
     if (checkIn) params.set("check_in", checkIn);
     if (checkOut) params.set("check_out", checkOut);
     if (adults && adults > 0) params.set("adults", String(adults));
+    params.set("source", "infinityrg_site");
     return `${baseUrl}?${params.toString()}`;
   }
 }
 
-function buildBookingUrl(baseUrl: string, checkIn?: string, checkOut?: string, adults?: number) {
-  // Booking.com commonly accepts: checkin, checkout, group_adults, no_rooms, group_children
+// Build a Booking.com deeplink from a base URL.
+// Common params: checkin, checkout, group_adults, no_rooms, group_children
+function buildBookingUrl(
+  baseUrl: string,
+  checkIn?: string,
+  checkOut?: string,
+  adults?: number
+) {
   try {
     const url = new URL(baseUrl);
     if (checkIn) url.searchParams.set("checkin", checkIn);
@@ -62,6 +79,7 @@ function buildBookingUrl(baseUrl: string, checkIn?: string, checkOut?: string, a
     return `${baseUrl}?${params.toString()}`;
   }
 }
+
 
 // --- Simple in-file fallback for QuickEnquiryForm (avoids missing import path errors) ---
 function QuickEnquiryForm() {
