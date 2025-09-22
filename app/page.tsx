@@ -1,5 +1,6 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
+import Script from "next/script";
 import { motion } from "framer-motion";
 import {
   Building2,
@@ -13,75 +14,17 @@ import {
   CircleDollarSign,
 } from "lucide-react";
 
-// --- Property config (put your real listing URLs here) ---
-const PROPERTIES = [
-  {
-    id: "ivrea",
-    name: "Ivrea Apartment",
-    // ✅ Real Airbnb listing
-    airbnbUrl: "https://www.airbnb.co.uk/rooms/1302830852131699994",
-    // ✅ Clean Booking.com URL (works with your deeplink params below)
-    bookingUrl: "https://www.booking.com/hotel/it/infinity-house-ivrea.en-gb.html",
-    maxGuests: 6,
-  },
-  // Add more properties if you have them
-];
+/** ---------------------------
+ *  Smoobu booking widget
+ *  Paste your exact URL from Smoobu “Embed in website”
+ *  Example seen earlier: https://login.smoobu.com/en/booking-tool/iframe/1426036
+ * ----------------------------*/
+const SMOOBU_IFRAME_URL =
+  "https://login.smoobu.com/en/booking-tool/iframe/1426036";
+const SMOOBU_BASE_URL = "https://login.smoobu.com/";
+const SMOOBU_TARGET = "#apartmentIframeAll";
 
-// Build a clean Airbnb deeplink from a base URL.
-// Accepts: check_in, check_out, adults
-function buildAirbnbUrl(
-  baseUrl: string,
-  checkIn?: string,
-  checkOut?: string,
-  adults?: number
-) {
-  try {
-    const url = new URL(baseUrl);
-    if (checkIn) url.searchParams.set("check_in", checkIn);
-    if (checkOut) url.searchParams.set("check_out", checkOut);
-    if (adults && adults > 0) url.searchParams.set("adults", String(adults));
-    // Optional attribution tag for your analytics
-    url.searchParams.set("source", "infinityrg_site");
-    return url.toString();
-  } catch {
-    const params = new URLSearchParams();
-    if (checkIn) params.set("check_in", checkIn);
-    if (checkOut) params.set("check_out", checkOut);
-    if (adults && adults > 0) params.set("adults", String(adults));
-    params.set("source", "infinityrg_site");
-    return `${baseUrl}?${params.toString()}`;
-  }
-}
-
-// Build a Booking.com deeplink from a base URL.
-// Common params: checkin, checkout, group_adults, no_rooms, group_children
-function buildBookingUrl(
-  baseUrl: string,
-  checkIn?: string,
-  checkOut?: string,
-  adults?: number
-) {
-  try {
-    const url = new URL(baseUrl);
-    if (checkIn) url.searchParams.set("checkin", checkIn);
-    if (checkOut) url.searchParams.set("checkout", checkOut);
-    if (adults && adults > 0) url.searchParams.set("group_adults", String(adults));
-    url.searchParams.set("no_rooms", "1");
-    url.searchParams.set("group_children", "0");
-    return url.toString();
-  } catch {
-    const params = new URLSearchParams();
-    if (checkIn) params.set("checkin", checkIn);
-    if (checkOut) params.set("checkout", checkOut);
-    if (adults && adults > 0) params.set("group_adults", String(adults));
-    params.set("no_rooms", "1");
-    params.set("group_children", "0");
-    return `${baseUrl}?${params.toString()}`;
-  }
-}
-
-
-// --- Simple in-file fallback for QuickEnquiryForm (avoids missing import path errors) ---
+/** Simple enquiry form (unchanged) */
 function QuickEnquiryForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -140,13 +83,16 @@ ${message}`);
         Send enquiry
       </button>
       {sent && (
-        <p className="text-xs text-emerald-400">Opening your email client… if nothing happens, email us at contactestates@infinityrg.co.uk</p>
+        <p className="text-xs text-emerald-400">
+          Opening your email client… if nothing happens, email us at
+          contactestates@infinityrg.co.uk
+        </p>
       )}
     </form>
   );
 }
 
-// Section component
+/** Layout helpers */
 const Section = ({
   id,
   children,
@@ -164,7 +110,6 @@ const Section = ({
   </section>
 );
 
-// NavLink component
 const NavLink = ({
   href,
   children,
@@ -180,17 +125,28 @@ const NavLink = ({
   </a>
 );
 
-// ✅ Main Page (professional & interactive card like earlier layout)
+/** ---------------------------
+ *  MAIN PAGE
+ *  Replaces the old Airbnb/Booking deep links with the Smoobu embed
+ * ----------------------------*/
 export default function InfinityRGSite() {
-  const [propertyId, setPropertyId] = useState(PROPERTIES[0].id);
-  const [checkIn, setCheckIn] = useState<string>("");
-  const [checkOut, setCheckOut] = useState<string>("");
-  const [guests, setGuests] = useState<number>(2);
+  // Initialize the Smoobu widget after the script loads
+  useEffect(() => {
+    // @ts-ignore (Smoobu attaches a global)
+    const init = () => window.BookingToolIframe?.initialize?.({
+      url: SMOOBU_IFRAME_URL,
+      baseUrl: SMOOBU_BASE_URL,
+      target: SMOOBU_TARGET,
+    });
 
-  const property = useMemo(() => PROPERTIES.find(p => p.id === propertyId)!, [propertyId]);
+    // Try immediately (if script already loaded)
+    // @ts-ignore
+    if (typeof window !== "undefined" && window.BookingToolIframe) init();
 
-  const airbnbUrl = useMemo(() => buildAirbnbUrl(property.airbnbUrl, checkIn, checkOut, guests), [property, checkIn, checkOut, guests]);
-  const bookingUrl = useMemo(() => buildBookingUrl(property.bookingUrl, checkIn, checkOut, guests), [property, checkIn, checkOut, guests]);
+    // Fallback: try once after a short delay
+    const t = setTimeout(init, 400);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -238,9 +194,7 @@ export default function InfinityRGSite() {
               reporting and trusted partners.
             </p>
 
-            {/* Buttons Row */}
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              {/* ✅ Calendly link */}
               <a
                 href="https://calendly.com/infinityboutiqueh/30min"
                 target="_blank"
@@ -257,7 +211,6 @@ export default function InfinityRGSite() {
                 Explore services
               </a>
 
-              {/* ✅ Buy eBook Button */}
               <a
                 href="https://pay.hotmart.com/G101548209U?checkoutMode=2"
                 target="_blank"
@@ -268,7 +221,6 @@ export default function InfinityRGSite() {
               </a>
             </div>
 
-            {/* Feature highlights */}
             <div className="mt-6 grid grid-cols-2 md:flex md:flex-row gap-4 text-sm text-slate-400">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4" /> Transparent management
@@ -283,98 +235,32 @@ export default function InfinityRGSite() {
             </div>
           </motion.div>
 
-          {/* ✅ Booking Card: interactive, professional layout */}
+          {/* ✅ Smoobu Booking Engine embed */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.6 }}
           >
             <div className="relative rounded-2xl border border-slate-700/60 bg-[#0f172a] p-6 shadow-2xl shadow-black/40 ring-1 ring-white/5">
-              <h3 className="text-lg font-semibold text-slate-100">Book your stay</h3>
-              <p className="mt-1 text-sm text-slate-400">Select details here, complete booking on Airbnb or Booking.com</p>
+              <h3 className="text-lg font-semibold text-slate-100">
+                Book your stay
+              </h3>
+              <p className="mt-1 text-sm text-slate-400">
+                Check availability and complete your booking securely.
+              </p>
 
-              {/* Property (only show if multiple) */}
-              {PROPERTIES.length > 1 && (
-                <div className="mt-4">
-                  <label className="block text-sm text-slate-300">Property</label>
-                  <select
-                    className="mt-2 w-full rounded-xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    value={propertyId}
-                    onChange={(e) => setPropertyId(e.target.value)}
-                  >
-                    {PROPERTIES.map((p) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
+              {/* Container required by Smoobu */}
+              <div
+                id="apartmentIframeAll"
+                className="mt-4 rounded-xl"
+                style={{ minHeight: 1100 }}
+              />
 
-              {/* Dates */}
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm text-slate-300">Check‑in</label>
-                  <input
-                    type="date"
-                    className="mt-2 w-full rounded-xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    value={checkIn}
-                    onChange={(e) => setCheckIn(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-slate-300">Check‑out</label>
-                  <input
-                    type="date"
-                    className="mt-2 w-full rounded-xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    value={checkOut}
-                    onChange={(e) => setCheckOut(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* Guests */}
-              <div className="mt-4">
-                <label className="block text-sm text-slate-300">Guests</label>
-                <div className="mt-2 flex items-center gap-3">
-                  <button
-                    className="h-10 w-10 rounded-xl border border-slate-700 bg-slate-900/70 text-lg leading-none hover:bg-slate-800"
-                    onClick={() => setGuests((g) => Math.max(1, g - 1))}
-                    aria-label="Decrease guests"
-                    type="button"
-                  >
-                    −
-                  </button>
-                  <div className="min-w-[3rem] text-center font-semibold">{guests}</div>
-                  <button
-                    className="h-10 w-10 rounded-xl border border-slate-700 bg-slate-900/70 text-lg leading-none hover:bg-slate-800"
-                    onClick={() => setGuests((g) => Math.min(property.maxGuests, g + 1))}
-                    aria-label="Increase guests"
-                    type="button"
-                  >
-                    +
-                  </button>
-                  <span className="text-xs text-slate-400">max {property.maxGuests}</span>
-                </div>
-              </div>
-
-              {/* CTAs */}
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <a
-                  href={airbnbUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold hover:bg-blue-500 transition shadow-lg shadow-blue-600/25"
-                >
-                  Book on Airbnb →
-                </a>
-                <a
-                  href={bookingUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 px-5 py-3 text-sm font-semibold hover:bg-slate-700 transition border border-slate-700"
-                >
-                  Book on Booking.com →
-                </a>
-              </div>
+              {/* Smoobu script (loads once on client) */}
+              <Script
+                src="https://login.smoobu.com/js/Settings/BookingToolIframe.js"
+                strategy="afterInteractive"
+              />
 
               {/* Subtle glow */}
               <div className="pointer-events-none absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br from-blue-600/10 via-transparent to-violet-500/10 blur-2xl" />
@@ -434,10 +320,6 @@ export default function InfinityRGSite() {
           <h2 className="text-3xl font-semibold tracking-tight">
             Why choose Infinity RG
           </h2>
-          <p className="text-slate-400 mt-2">
-            We combine diligence with transparency to protect your capital and
-            time.
-          </p>
         </div>
         <div className="grid md:grid-cols-3 gap-5">
           {[
@@ -470,30 +352,26 @@ export default function InfinityRGSite() {
         </div>
       </Section>
 
-      {/* ✅ PROCESS */}
+      {/* PROCESS */}
       <Section id="process" className="py-12">
         <div className="mb-8">
           <h2 className="text-3xl font-semibold tracking-tight">Our Process</h2>
-          <p className="text-slate-400 mt-2">
-            A simple, step-by-step process designed to make investing and
-            managing property smooth and transparent.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-4 gap-5">
-          {[
-            { step: "1. Consultation", desc: "We understand your goals and financial situation." },
-            { step: "2. Deal Sourcing", desc: "We identify the right opportunities tailored to your needs." },
-            { step: "3. Management", desc: "From tenant find to compliance and maintenance." },
-            { step: "4. Reporting", desc: "Clear, transparent updates so you always stay in control." },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="bg-slate-900 border border-slate-700 text-white rounded-2xl shadow-md shadow-blue-900/40 p-4"
-            >
-              <div className="text-lg font-semibold">{item.step}</div>
-              <p className="text-sm text-slate-300 mt-2">{item.desc}</p>
-            </div>
-          ))}
+          <div className="grid md:grid-cols-4 gap-5 mt-6">
+            {[
+              { step: "1. Consultation", desc: "We understand your goals and financial situation." },
+              { step: "2. Deal Sourcing", desc: "We identify the right opportunities tailored to your needs." },
+              { step: "3. Management", desc: "From tenant find to compliance and maintenance." },
+              { step: "4. Reporting", desc: "Clear, transparent updates so you always stay in control." },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="bg-slate-900 border border-slate-700 text-white rounded-2xl shadow-md shadow-blue-900/40 p-4"
+              >
+                <div className="text-lg font-semibold">{item.step}</div>
+                <p className="text-sm text-slate-300 mt-2">{item.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </Section>
 
@@ -505,9 +383,8 @@ export default function InfinityRGSite() {
           </h2>
           <p className="text-slate-400 mt-2 max-w-3xl">
             We are a property management and investment team focused on
-            practical results and long-term partnerships. Based in Europe, active
-            in the UK and Italy, and open to opportunities further afield where
-            the numbers make sense.
+            practical results and long-term partnerships. Based in Europe,
+            active in the UK and Italy.
           </p>
         </div>
         <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6 grid md:grid-cols-3 gap-4 text-sm">
