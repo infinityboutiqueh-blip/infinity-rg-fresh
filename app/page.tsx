@@ -25,7 +25,7 @@ const PROPERTIES = [
     airbnbUrl: "https://www.airbnb.co.uk/rooms/1302830852131699994",
     // ✅ Clean Booking.com URL (works with your deeplink params below)
     bookingUrl: "https://www.booking.com/hotel/it/infinity-house-ivrea.en-gb.html",
-    maxGuests: 4,
+    maxGuests: 6,
   },
   // Add more properties if you have them
 ];
