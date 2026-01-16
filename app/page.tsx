@@ -189,7 +189,6 @@ function Hero() {
           </div>
 
           <div className='px-3 pb-2 pt-3'>
-            <div className='text-sm font-black text-slate-900'>60-second intro</div>
             <div className='mt-1 text-sm text-slate-600'>A quick overview of how we help landlords and investors.</div>
           </div>
         </Card>
