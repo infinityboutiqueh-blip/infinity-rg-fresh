@@ -61,7 +61,6 @@ function Nav() {
             className="h-16 w-auto"
           />
           <div className="leading-tight">
-            <div className="text-sm font-black text-slate-900">Infinity RG</div>
             <div className="text-xs text-slate-500">Landlords • Investors • Asset Growth</div>
           </div>
         </div>
