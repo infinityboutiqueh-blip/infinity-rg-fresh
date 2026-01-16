@@ -1,4 +1,8 @@
+'use client';
+
 import React, { useState } from "react";
+// ...
+
 
 // Elegant + brighter one-page mock based on https://www.infinityrg.co.uk/
 // Changes requested:
