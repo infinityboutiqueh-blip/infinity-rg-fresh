@@ -1,593 +1,378 @@
+import React, { useState } from "react";
 
+// Elegant + brighter one-page mock based on https://www.infinityrg.co.uk/
+// Changes requested:
+// - Brighter, more elegant look
+// - Remove “Book your stay” (no Airbnb)
+// - Keep it simple and aligned to current InfinityRG positioning
 
+const Button = ({ variant = "primary", className = "", ...props }) => {
+  const base =
+    "inline-flex items-center justify-center rounded-2xl px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-indigo-200";
+  const styles =
+    variant === "primary"
+      ? "bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm"
+      : variant === "secondary"
+        ? "border border-slate-200 bg-white text-slate-900 hover:bg-slate-50"
+        : "bg-transparent text-slate-700 hover:bg-slate-50";
+  return <button className={`${base} ${styles} ${className}`} {...props} />;
+};
 
-"use client";
-import React, { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import {
-  Building2,
-  Hotel,
-  Hammer,
-  Home as HomeIcon,
-  Phone,
-  ArrowRight,
-  ShieldCheck,
-  Search,
-  CircleDollarSign,
-} from "lucide-react";
-
-// --- Property config (put your real listing URLs here) ---
-const PROPERTIES = [
-  {
-    id: "ivrea",
-    name: "Ivrea Apartment",
-    // ✅ Real Airbnb listing
-    airbnbUrl: "https://www.airbnb.co.uk/rooms/1302830852131699994",
-    // ✅ Clean Booking.com URL (works with your deeplink params below)
-    bookingUrl: "https://www.booking.com/hotel/it/infinity-house-ivrea.en-gb.html",
-    maxGuests: 6,
-  },
-  // Add more properties if you have them
-];
-
-// Build a clean Airbnb deeplink from a base URL.
-// Accepts: check_in, check_out, adults
-function buildAirbnbUrl(
-  baseUrl: string,
-  checkIn?: string,
-  checkOut?: string,
-  adults?: number
-) {
-  try {
-    const url = new URL(baseUrl);
-    if (checkIn) url.searchParams.set("check_in", checkIn);
-    if (checkOut) url.searchParams.set("check_out", checkOut);
-    if (adults && adults > 0) url.searchParams.set("adults", String(adults));
-    // Optional attribution tag for your analytics
-    url.searchParams.set("source", "infinityrg_site");
-    return url.toString();
-  } catch {
-    const params = new URLSearchParams();
-    if (checkIn) params.set("check_in", checkIn);
-    if (checkOut) params.set("check_out", checkOut);
-    if (adults && adults > 0) params.set("adults", String(adults));
-    params.set("source", "infinityrg_site");
-    return `${baseUrl}?${params.toString()}`;
-  }
-}
-
-// Build a Booking.com deeplink from a base URL.
-// Common params: checkin, checkout, group_adults, no_rooms, group_children
-function buildBookingUrl(
-  baseUrl: string,
-  checkIn?: string,
-  checkOut?: string,
-  adults?: number
-) {
-  try {
-    const url = new URL(baseUrl);
-    if (checkIn) url.searchParams.set("checkin", checkIn);
-    if (checkOut) url.searchParams.set("checkout", checkOut);
-    if (adults && adults > 0) url.searchParams.set("group_adults", String(adults));
-    url.searchParams.set("no_rooms", "1");
-    url.searchParams.set("group_children", "0");
-    return url.toString();
-  } catch {
-    const params = new URLSearchParams();
-    if (checkIn) params.set("checkin", checkIn);
-    if (checkOut) params.set("checkout", checkOut);
-    if (adults && adults > 0) params.set("group_adults", String(adults));
-    params.set("no_rooms", "1");
-    params.set("group_children", "0");
-    return `${baseUrl}?${params.toString()}`;
-  }
-}
-
-
-// --- Simple in-file fallback for QuickEnquiryForm (avoids missing import path errors) ---
-function QuickEnquiryForm() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [sent, setSent] = useState(false);
-
-  function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const subject = encodeURIComponent("Website enquiry from InfinityRG");
-    const body = encodeURIComponent(`Name: ${name}
-Email: ${email}
-
-${message}`);
-    window.location.href = `mailto:contactestates@infinityrg.co.uk?subject=${subject}&body=${body}`;
-    setSent(true);
-  }
-
-  return (
-    <form onSubmit={onSubmit} className="space-y-3">
-      <div>
-        <label className="block text-sm text-slate-300">Name</label>
-        <input
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="mt-1 w-full rounded-2xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-          placeholder="Your name"
-        />
-      </div>
-      <div>
-        <label className="block text-sm text-slate-300">Email</label>
-        <input
-          required
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-2xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-          placeholder="you@example.com"
-        />
-      </div>
-      <div>
-        <label className="block text-sm text-slate-300">Message</label>
-        <textarea
-          required
-          rows={4}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="mt-1 w-full rounded-2xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-          placeholder="Tell us about your plans"
-        />
-      </div>
-      <button
-        type="submit"
-        className="inline-flex items-center justify-center rounded-2xl bg-blue-600 hover:bg-blue-500 px-5 py-2.5 text-sm font-semibold transition shadow-lg shadow-blue-600/20"
-      >
-        Send enquiry
-      </button>
-      {sent && (
-        <p className="text-xs text-emerald-400">Opening your email client… if nothing happens, email us at contactestates@infinityrg.co.uk</p>
-      )}
-    </form>
-  );
-}
-
-// Section component
-const Section = ({
-  id,
-  children,
-  className = "",
-}: {
-  id?: string;
-  children: React.ReactNode;
-  className?: string;
-}) => (
-  <section
-    id={id}
-    className={`max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}
-  >
-    {children}
-  </section>
+const Card = ({ className = "", children }) => (
+  <div className={`rounded-2xl border border-slate-200 bg-white shadow-sm ${className}`}>{children}</div>
 );
 
-// NavLink component
-const NavLink = ({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) => (
-  <a
-    href={href}
-    className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
-  >
+const AnchorLink = ({ href, children }) => (
+  <a href={href} className="text-sm font-semibold text-slate-600 hover:text-slate-900">
     {children}
   </a>
 );
 
-// ✅ Main Page (professional & interactive card like earlier layout)
-export default function InfinityRGSite() {
-  const [propertyId, setPropertyId] = useState(PROPERTIES[0].id);
-  const [checkIn, setCheckIn] = useState<string>("");
-  const [checkOut, setCheckOut] = useState<string>("");
-  const [guests, setGuests] = useState<number>(2);
+const scrollToId = (id) => {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+};
 
-  const property = useMemo(() => PROPERTIES.find(p => p.id === propertyId)!, [propertyId]);
-
-  const airbnbUrl = useMemo(() => buildAirbnbUrl(property.airbnbUrl, checkIn, checkOut, guests), [property, checkIn, checkOut, guests]);
-  const bookingUrl = useMemo(() => buildBookingUrl(property.bookingUrl, checkIn, checkOut, guests), [property, checkIn, checkOut, guests]);
-
+function Nav() {
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
-      {/* HEADER */}
-      <header className="bg-slate-950 text-white px-6 py-4 flex items-center justify-between shadow-md">
-        <div className="flex items-center space-x-3">
-          <div className="w-40 h-auto relative">
-            <img
-              src="/logo.png"
-              alt="Infinity RG"
-              className="max-h-30 w-auto object-contain"
-            />
+    <div className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-2xl bg-indigo-600 text-white font-black">RG</div>
+          <div className="leading-tight">
+            <div className="text-sm font-black text-slate-900">Infinity RG</div>
+            <div className="text-xs text-slate-500">Landlords • Investors • Asset Growth</div>
           </div>
         </div>
 
-        <nav className="hidden md:flex space-x-6 text-sm font-medium">
-          <NavLink href="#services">Services</NavLink>
-          <NavLink href="#whyus">Why Us</NavLink>
-          <NavLink href="#process">Process</NavLink>
-          <NavLink href="#about">About</NavLink>
-          <NavLink href="#contact">Contact</NavLink>
-        </nav>
-        <a
-          href="#contact"
-          className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium"
-        >
-          Get in touch →
-        </a>
-      </header>
-
-      {/* HERO */}
-      <Section id="home" className="pt-14 pb-12">
-        <div className="grid lg:grid-cols-2 gap-8 items-start">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-              Smart property solutions for landlords & investors
-            </h1>
-            <p className="mt-4 text-lg text-slate-300">
-              Infinity RG helps you buy, manage, and maximize property assets
-              from buy-to-let and Airbnb to buy-refurbish-sell with clear
-              reporting and trusted partners.
-            </p>
-
-            {/* Buttons Row */}
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              {/* ✅ Calendly link */}
-              <a
-                href="https://calendly.com/infinityboutiqueh/30min"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 rounded-2xl bg-blue-600 hover:bg-blue-500 flex items-center"
-              >
-                Request a call <ArrowRight className="ml-2 w-4 h-4" />
-              </a>
-
-              <a
-                href="#services"
-                className="text-sm font-medium underline underline-offset-4"
-              >
-                Explore services
-              </a>
-
-              {/* ✅ Buy eBook Button */}
-              <a
-                href="https://pay.hotmart.com/G101548209U?checkoutMode=2"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-2xl text-sm font-semibold shadow-md shadow-green-900/40 transition-transform hover:scale-105 ml-4"
-              >
-                Buy eBook →
-              </a>
-            </div>
-
-            {/* Feature highlights */}
-            <div className="mt-6 grid grid-cols-2 md:flex md:flex-row gap-4 text-sm text-slate-400">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4" /> Transparent management
-              </div>
-              <div className="flex items-center gap-2">
-                <CircleDollarSign className="w-4 h-4" /> Investor-friendly
-                returns
-              </div>
-              <div className="flex items-center gap-2">
-                <Search className="w-4 h-4" /> Deal sourcing support
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ✅ Booking Card: interactive, professional layout */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.6 }}
-          >
-            <div className="relative rounded-2xl border border-slate-700/60 bg-[#0f172a] p-6 shadow-2xl shadow-black/40 ring-1 ring-white/5">
-              <h3 className="text-lg font-semibold text-slate-100">Book your stay</h3>
-              <p className="mt-1 text-sm text-slate-400">Select details here, complete booking on Airbnb or Booking.com</p>
-
-              {/* Property (only show if multiple) */}
-              {PROPERTIES.length > 1 && (
-                <div className="mt-4">
-                  <label className="block text-sm text-slate-300">Property</label>
-                  <select
-                    className="mt-2 w-full rounded-xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    value={propertyId}
-                    onChange={(e) => setPropertyId(e.target.value)}
-                  >
-                    {PROPERTIES.map((p) => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {/* Dates */}
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm text-slate-300">Check‑in</label>
-                  <input
-                    type="date"
-                    className="mt-2 w-full rounded-xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    value={checkIn}
-                    onChange={(e) => setCheckIn(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm text-slate-300">Check‑out</label>
-                  <input
-                    type="date"
-                    className="mt-2 w-full rounded-xl bg-slate-900/70 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
-                    value={checkOut}
-                    onChange={(e) => setCheckOut(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              {/* Guests */}
-              <div className="mt-4">
-                <label className="block text-sm text-slate-300">Guests</label>
-                <div className="mt-2 flex items-center gap-3">
-                  <button
-                    className="h-10 w-10 rounded-xl border border-slate-700 bg-slate-900/70 text-lg leading-none hover:bg-slate-800"
-                    onClick={() => setGuests((g) => Math.max(1, g - 1))}
-                    aria-label="Decrease guests"
-                    type="button"
-                  >
-                    −
-                  </button>
-                  <div className="min-w-[3rem] text-center font-semibold">{guests}</div>
-                  <button
-                    className="h-10 w-10 rounded-xl border border-slate-700 bg-slate-900/70 text-lg leading-none hover:bg-slate-800"
-                    onClick={() => setGuests((g) => Math.min(property.maxGuests, g + 1))}
-                    aria-label="Increase guests"
-                    type="button"
-                  >
-                    +
-                  </button>
-                  <span className="text-xs text-slate-400">max {property.maxGuests}</span>
-                </div>
-              </div>
-
-              {/* CTAs */}
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <a
-                  href={airbnbUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold hover:bg-blue-500 transition shadow-lg shadow-blue-600/25"
-                >
-                  Book on Airbnb →
-                </a>
-                <a
-                  href={bookingUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-800 px-5 py-3 text-sm font-semibold hover:bg-slate-700 transition border border-slate-700"
-                >
-                  Book on Booking.com →
-                </a>
-              </div>
-
-              {/* Subtle glow */}
-              <div className="pointer-events-none absolute inset-0 -z-10 rounded-3xl bg-gradient-to-br from-blue-600/10 via-transparent to-violet-500/10 blur-2xl" />
-            </div>
-          </motion.div>
+        <div className="hidden items-center gap-6 md:flex">
+          <AnchorLink href="#services">Services</AnchorLink>
+          <AnchorLink href="#why">Why Us</AnchorLink>
+          <AnchorLink href="#process">Process</AnchorLink>
+          <AnchorLink href="#about">About</AnchorLink>
+          <AnchorLink href="#contact">Contact</AnchorLink>
         </div>
-      </Section>
 
-      {/* SERVICES */}
-      <Section id="services" className="py-12">
-        <div className="mb-8">
-          <h2 className="text-3xl font-semibold tracking-tight">What we do</h2>
-          <p className="text-slate-400 mt-2">
-            End-to-end services designed for busy landlords and hands-on
-            investors.
-          </p>
+        <div className="flex items-center gap-2">
+          <Button variant="secondary" onClick={() => scrollToId("contact")}>Get in touch</Button>
+          <Button onClick={() => window.open("https://calendly.com", "_blank")}>Book a call</Button>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {[
-            {
-              title: "Landlord Services",
-              desc: "Tenant find, compliance, rent collection, and maintenance coordination with clear monthly statements.",
-              icon: <Building2 className="w-5 h-5" />,
-            },
-            {
-              title: "Buy-to-Let (BTL)",
-              desc: "Sourcing, analysis, and acquisition support to build a resilient, cash-flowing portfolio.",
-              icon: <HomeIcon className="w-5 h-5" />,
-            },
-            {
-              title: "Short-Lets / Airbnb",
-              desc: "Set-up, pricing, and guest management for higher occupancy and reviews—without the day-to-day hassle.",
-              icon: <Hotel className="w-5 h-5" />,
-            },
-            {
-              title: "Buy-Refurb-Sell",
-              desc: "Light to heavy refurbs managed end-to-end with budgets, timelines, and resale strategy aligned to your goals.",
-              icon: <Hammer className="w-5 h-5" />,
-            },
-          ].map((s, i) => (
-            <div
-              key={i}
-              className="bg-slate-900 border border-slate-700 text-white rounded-2xl shadow-md shadow-blue-900/40 p-4"
-            >
-              <div className="flex items-center gap-2 text-lg font-semibold">
-                {s.icon} {s.title}
-              </div>
-              <p className="text-sm text-slate-300 mt-2">{s.desc}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      {/* WHY US */}
-      <Section id="whyus" className="py-12">
-        <div className="mb-8">
-          <h2 className="text-3xl font-semibold tracking-tight">
-            Why choose Infinity RG
-          </h2>
-          <p className="text-slate-400 mt-2">
-            We combine diligence with transparency to protect your capital and
-            time.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-3 gap-5">
-          {[
-            {
-              title: "Trust first",
-              desc: "Clear comms, honest updates, and no surprises—ever.",
-              icon: <ShieldCheck className="w-5 h-5" />,
-            },
-            {
-              title: "Data-driven deals",
-              desc: "Deals filtered by yield, risk, and exit options you can defend.",
-              icon: <Search className="w-5 h-5" />,
-            },
-            {
-              title: "Aligned incentives",
-              desc: "We win when you do—structured for long-term relationships.",
-              icon: <CircleDollarSign className="w-5 h-5" />,
-            },
-          ].map((v, i) => (
-            <div
-              key={i}
-              className="bg-slate-900 border border-slate-700 text-white rounded-2xl shadow-md shadow-blue-900/40 p-4"
-            >
-              <div className="flex items-center gap-2 text-lg font-semibold">
-                {v.icon} {v.title}
-              </div>
-              <p className="text-sm text-slate-300 mt-2">{v.desc}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      {/* ✅ PROCESS */}
-      <Section id="process" className="py-12">
-        <div className="mb-8">
-          <h2 className="text-3xl font-semibold tracking-tight">Our Process</h2>
-          <p className="text-slate-400 mt-2">
-            A simple, step-by-step process designed to make investing and
-            managing property smooth and transparent.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-4 gap-5">
-          {[
-            { step: "1. Consultation", desc: "We understand your goals and financial situation." },
-            { step: "2. Deal Sourcing", desc: "We identify the right opportunities tailored to your needs." },
-            { step: "3. Management", desc: "From tenant find to compliance and maintenance." },
-            { step: "4. Reporting", desc: "Clear, transparent updates so you always stay in control." },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="bg-slate-900 border border-slate-700 text-white rounded-2xl shadow-md shadow-blue-900/40 p-4"
-            >
-              <div className="text-lg font-semibold">{item.step}</div>
-              <p className="text-sm text-slate-300 mt-2">{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      {/* ABOUT */}
-      <Section id="about" className="py-12">
-        <div className="mb-8">
-          <h2 className="text-3xl font-semibold tracking-tight">
-            About Infinity RG
-          </h2>
-          <p className="text-slate-400 mt-2 max-w-3xl">
-            We are a property management and investment team focused on
-            practical results and long-term partnerships. Based in Europe, active
-            in the UK and Italy, and open to opportunities further afield where
-            the numbers make sense.
-          </p>
-        </div>
-        <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6 grid md:grid-cols-3 gap-4 text-sm">
-          <div>
-            <div className="text-slate-400">Registered email</div>
-            <a
-              className="font-medium underline text-white"
-              href="mailto:contactestates@infinityrg.co.uk"
-            >
-              contactestates@infinityrg.co.uk
-            </a>
-          </div>
-          <div>
-            <div className="text-slate-400">Instagram</div>
-            <a
-              className="font-medium underline text-white"
-              href="https://www.instagram.com/infinityrg_/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              @InfinityRG
-            </a>
-          </div>
-          <div>
-            <div className="text-slate-400">Response hours</div>
-            <div className="font-medium">Mon–Fri, 09:00–17:30 CET</div>
-          </div>
-        </div>
-      </Section>
-
-      {/* CONTACT */}
-      <Section id="contact" className="py-12">
-        <div className="mb-8">
-          <h2 className="text-3xl font-semibold tracking-tight">Let’s talk</h2>
-          <p className="text-slate-400 mt-2">
-            Tell us what you’re planning and we’ll get back to you within one
-            business day.
-          </p>
-        </div>
-        <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6">
-            <QuickEnquiryForm />
-          </div>
-          <div className="bg-slate-900 border border-slate-700 text-white rounded-3xl shadow-md shadow-blue-900/40 p-6 space-y-4">
-            <div className="flex items-start gap-3">
-              <Phone className="w-5 h-5 mt-1" />
-              <div>
-                <div className="text-sm text-slate-400">Prefer email?</div>
-                <a
-                  className="font-medium underline text-white"
-                  href="mailto:contactestates@infinityrg.co.uk"
-                >
-                  contactestates@infinityrg.co.uk
-                </a>
-              </div>
-            </div>
-            <div className="text-sm text-slate-400">
-              We typically reply the same business day.
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      {/* FOOTER */}
-      <footer className="border-t border-slate-700 mt-12">
-        <Section className="py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-400">
-          <div>© {new Date().getFullYear()} Infinity RG. All rights reserved.</div>
-          <div className="flex items-center gap-6">
-            <a href="/privacy" className="hover:text-white">
-              Privacy
-            </a>
-            <a href="/terms" className="hover:text-white">
-              Terms
-            </a>
-          </div>
-        </Section>
-      </footer>
+      </div>
     </div>
   );
 }
+
+function Hero() {
+  return (
+    <div className="relative overflow-hidden bg-slate-50">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_10%_10%,rgba(79,70,229,0.14),transparent_45%),radial-gradient(circle_at_90%_20%,rgba(14,165,233,0.10),transparent_40%),radial-gradient(circle_at_50%_90%,rgba(16,185,129,0.10),transparent_45%)]" />
+
+      <div className="relative mx-auto max-w-6xl px-4 py-12 md:py-16">
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              Transparent management • Investor mindset
+            </div>
+
+            <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
+              Elegant property management & investment support
+            </h1>
+
+            <p className="mt-4 text-base text-slate-600 md:text-lg">
+              Infinity RG helps you buy, manage, and optimise property assets — focused on buy-to-let, refurb projects,
+              and long-term value.
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button onClick={() => window.open("https://calendly.com", "_blank")}>Request a call</Button>
+              <Button variant="secondary" onClick={() => scrollToId("services")}>Explore services</Button>
+              <Button variant="secondary" onClick={() => window.open("https://pay.hotmart.com", "_blank")}>Buy eBook →</Button>
+            </div>
+
+            <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {["Clear reporting", "Trusted partners", "Deal sourcing support"].map((t) => (
+                <div key={t} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800">
+                  {t}
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-6 text-sm text-slate-500">
+              Note: Infinity RG is a property management & investment team — not an estate agency listing the whole market.
+            </div>
+          </div>
+
+          <Card className="p-6">
+            <div className="text-sm font-black text-slate-900">Quick snapshot</div>
+            <div className="mt-1 text-sm text-slate-600">A clean, modern block to replace the Airbnb widget.</div>
+
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="text-xs font-bold text-slate-500">Focus</div>
+                <div className="mt-1 text-sm font-black text-slate-900">BTL • Refurb</div>
+                <div className="mt-1 text-xs text-slate-500">Long-term value</div>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="text-xs font-bold text-slate-500">Reporting</div>
+                <div className="mt-1 text-sm font-black text-slate-900">Simple & clear</div>
+                <div className="mt-1 text-xs text-slate-500">Monthly statements</div>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="text-xs font-bold text-slate-500">Execution</div>
+                <div className="mt-1 text-sm font-black text-slate-900">Project-led</div>
+                <div className="mt-1 text-xs text-slate-500">Budgets & timelines</div>
+              </div>
+              <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="text-xs font-bold text-slate-500">Support</div>
+                <div className="mt-1 text-sm font-black text-slate-900">Hands-on</div>
+                <div className="mt-1 text-xs text-slate-500">Owner-first</div>
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
+              <div className="text-sm font-black text-slate-900">What you can expect</div>
+              <ul className="mt-2 space-y-2 text-sm text-slate-600">
+                <li>• Straight answers and realistic numbers</li>
+                <li>• Practical plan: acquire → refurb (if needed) → manage</li>
+                <li>• Clear communication with evidence</li>
+              </ul>
+            </div>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              <Button onClick={() => scrollToId("contact")} className="flex-1">Request a plan</Button>
+              <Button variant="secondary" onClick={() => scrollToId("process")}>See process</Button>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Section({ id, title, subtitle, children, alt = false }) {
+  return (
+    <div id={id} className={alt ? "bg-slate-50" : "bg-white"}>
+      <div className="mx-auto max-w-6xl px-4 py-14">
+        <div className="max-w-3xl">
+          <h2 className="text-2xl font-black text-slate-900 md:text-3xl">{title}</h2>
+          {subtitle ? <p className="mt-3 text-base text-slate-600">{subtitle}</p> : null}
+        </div>
+        <div className="mt-8">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function Services() {
+  const items = [
+    {
+      title: "Landlord Services",
+      desc: "Tenant find, compliance support, rent collection, and maintenance coordination with clear monthly statements.",
+    },
+    {
+      title: "Buy-to-Let (BTL)",
+      desc: "Sourcing, analysis, and acquisition support to build a resilient, cash-flowing portfolio.",
+    },
+    {
+      title: "Buy • Refurb • Sell",
+      desc: "Refurbs managed end-to-end with budgets, timelines, and a clear exit strategy aligned to your goals.",
+    },
+    {
+      title: "Deal Sourcing & Due Diligence",
+      desc: "Filter opportunities properly — numbers, risks, and the real plan behind the deal.",
+    },
+  ];
+
+  return (
+    <Section
+      id="services"
+      title="What we do"
+      subtitle="Simple services that support owners and investors — without pretending to be a full agency."
+    >
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {items.map((it) => (
+          <Card key={it.title} className="p-6">
+            <div className="text-lg font-black text-slate-900">{it.title}</div>
+            <p className="mt-2 text-sm text-slate-600">{it.desc}</p>
+            <div className="mt-5">
+              <Button variant="secondary" onClick={() => scrollToId("contact")}>Ask about this</Button>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+function Why() {
+  const items = [
+    { title: "Trust first", desc: "Clear comms, honest updates, and no surprises." },
+    { title: "Numbers that make sense", desc: "No fantasy returns — just what the deal can realistically do." },
+    { title: "Execution matters", desc: "Reliable partners, clear scope, and timelines you can track." },
+  ];
+
+  return (
+    <Section
+      id="why"
+      alt
+      title="Why choose Infinity RG"
+      subtitle="We combine diligence with transparency to protect your capital and time."
+    >
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {items.map((it) => (
+          <Card key={it.title} className="p-6">
+            <div className="text-lg font-black text-slate-900">{it.title}</div>
+            <p className="mt-2 text-sm text-slate-600">{it.desc}</p>
+          </Card>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+function Process() {
+  const steps = [
+    { n: "1", t: "Consultation", d: "We understand your goals and timeline." },
+    { n: "2", t: "Plan", d: "We map the best route: acquisition, refurb (if needed), and management." },
+    { n: "3", t: "Execution", d: "We coordinate the work and keep you updated with evidence." },
+    { n: "4", t: "Reporting", d: "Clear statements and performance updates so you stay in control." },
+  ];
+
+  return (
+    <Section
+      id="process"
+      title="Our process"
+      subtitle="A simple step-by-step flow to keep everything smooth and transparent."
+    >
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {steps.map((s) => (
+          <Card key={s.n} className="p-6">
+            <div className="flex items-start gap-3">
+              <div className="grid h-10 w-10 place-items-center rounded-2xl bg-indigo-600 text-white font-black">{s.n}</div>
+              <div>
+                <div className="text-lg font-black text-slate-900">{s.t}</div>
+                <p className="mt-1 text-sm text-slate-600">{s.d}</p>
+              </div>
+            </div>
+          </Card>
+        ))}
+      </div>
+    </Section>
+  );
+}
+
+function About() {
+  return (
+    <Section
+      id="about"
+      alt
+      title="About Infinity RG"
+      subtitle="We’re focused on practical results and long-term partnerships."
+    >
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Card className="p-6">
+          <div className="text-sm font-black text-slate-900">What we are</div>
+          <p className="mt-2 text-sm text-slate-600">
+            A property management and investment team. We help owners operate properties properly, and we support investors
+            with sourcing, analysis, and project execution.
+          </p>
+        </Card>
+        <Card className="p-6">
+          <div className="text-sm font-black text-slate-900">Contact</div>
+          <div className="mt-3 space-y-2 text-sm text-slate-600">
+            <div>
+              <span className="font-semibold text-slate-900">Email:</span> contactestates@infinityrg.co.uk
+            </div>
+            <div>
+              <span className="font-semibold text-slate-900">Instagram:</span> @InfinityRG
+            </div>
+            <div>
+              <span className="font-semibold text-slate-900">Hours:</span> Mon–Fri, 09:00–17:30 CET
+            </div>
+          </div>
+        </Card>
+      </div>
+    </Section>
+  );
+}
+
+function Contact() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+
+  const canSend = name.trim() && email.trim() && message.trim();
+
+  return (
+    <Section
+      id="contact"
+      title="Let’s talk"
+      subtitle="Tell us what you’re planning and we’ll get back to you within one business day."
+    >
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Card className="p-6">
+          <div className="text-sm font-black text-slate-900">Send enquiry</div>
+          <div className="mt-4 grid gap-3">
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-200"
+              placeholder="Name"
+            />
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-200"
+              placeholder="Email"
+            />
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              className="min-h-[120px] rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-indigo-200"
+              placeholder="Message"
+            />
+            <Button
+              disabled={!canSend}
+              className={!canSend ? "opacity-50 cursor-not-allowed" : ""}
+              onClick={() => alert("Mock: form sent")}
+            >
+              Send enquiry
+            </Button>
+          </div>
+          <div className="mt-4 text-sm text-slate-500">Prefer email? contactestates@infinityrg.co.uk</div>
+          <div className="mt-1 text-xs text-slate-400">We typically reply the same business day.</div>
+        </Card>
+
+        <Card className="p-6">
+          <div className="text-sm font-black text-slate-900">Quick options</div>
+          <p className="mt-2 text-sm text-slate-600">
+            If you want speed: book a call. If you want detail: send the form with your area + property type + timeline.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Button onClick={() => window.open("https://calendly.com", "_blank")}>Book a call</Button>
+            <Button variant="secondary" onClick={() => scrollToId("services")}>See services</Button>
+          </div>
+          <div className="mt-6 rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">
+            <div className="font-black text-slate-900">Privacy note</div>
+            <div className="mt-1">We can keep property details private (city/region only, no full addresses).</div>
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-10 border-t border-slate-200 pt-6 text-sm text-slate-500">© {new Date().getFullYear()} Infinity RG. All rights reserved.</div>
+    </Section>
+  );
+}
+
+export default function InfinityRG_ElegantBrightMock() {
+  return (
+    <div className="min-h-screen bg-white text-slate-900">
+      <Nav />
+      <Hero />
+      <Services />
+      <Why />
+      <Process />
+      <About />
+      <Contact />
+    </div>
