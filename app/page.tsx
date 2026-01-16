@@ -55,9 +55,8 @@ function Nav() {
       <div className='mx-auto flex max-w-6xl items-center justify-between px-4 py-3'>
         <div className='flex items-center gap-3'>
           {/* Put your logo file here: /public/infinityrg-logo.png */}
-          <img src='/infinityrg-logo.png' alt='Infinity RG logo' className='h-14 w-auto' />
+          <img src='/infinityrg-logo.png' alt='Infinity RG logo' className='h-30 w-auto' />
           <div className='leading-tight'>
-            <div className='text-sm font-black text-slate-900'>Infinity RG</div>
             <div className='text-xs text-slate-500'>Landlords • Investors • Asset Growth</div>
           </div>
         </div>
