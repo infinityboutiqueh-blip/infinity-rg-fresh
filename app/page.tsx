@@ -114,11 +114,11 @@ function Hero() {
           </div>
 
           <h1 className='mt-4 text-4xl font-black tracking-tight text-slate-900 md:text-5xl'>
-            Elegant property management & investment support
+            Property management & investment support
           </h1>
 
           <p className='mt-4 text-base text-slate-600 md:text-lg'>
-            Infinity RG helps you buy, manage, and optimise property assets — focused on buy-to-let, refurb projects,
+            Infinity RG helps you buy, manage, and optimise property assets, focused on buy-to-let, refurb projects,
             and long-term value.
           </p>
 
