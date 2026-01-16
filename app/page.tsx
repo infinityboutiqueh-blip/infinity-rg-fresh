@@ -2,7 +2,28 @@
 
 import React, { useMemo, useState } from 'react';
 
-function Button({ variant = 'primary', className = '', ...props }) {
+type Persona = 'Landlord' | 'Investor';
+
+type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+  variant?: 'primary' | 'secondary' | 'ghost';
+};
+
+type CardProps = {
+  className?: string;
+  children?: React.ReactNode;
+};
+
+type SectionProps = {
+  id: string;
+  title: string;
+  subtitle?: string;
+  alt?: boolean;
+  children?: React.ReactNode;
+};
+
+type Prefill = { persona: Persona; location: string } | null;
+
+function Button({ variant = 'primary', className = '', ...props }: ButtonProps) {
   const base =
     'inline-flex items-center justify-center rounded-2xl px-4 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-slate-300 disabled:opacity-50 disabled:cursor-not-allowed';
   const styles =
@@ -15,11 +36,11 @@ function Button({ variant = 'primary', className = '', ...props }) {
   return <button className={`${base} ${styles} ${className}`} {...props} />;
 }
 
-function Card({ className = '', children }) {
+function Card({ className = '', children }: CardProps) {
   return <div className={`rounded-2xl border border-slate-200 bg-white shadow-sm ${className}`}>{children}</div>;
 }
 
-function Section({ id, title, subtitle, alt = false, children }) {
+function Section({ id, title, subtitle, alt = false, children }: SectionProps) {
   return (
     <section id={id} className={alt ? 'bg-slate-50' : 'bg-white'}>
       <div className='mx-auto max-w-6xl px-4 py-14'>
@@ -103,8 +124,12 @@ function Nav() {
   );
 }
 
-function HeroGetStarted({ onPrefill }) {
-  const [persona, setPersona] = useState('Landlord');
+function HeroGetStarted({
+  onPrefill,
+}: {
+  onPrefill?: (persona: Persona, location: string) => void;
+}) {
+  const [persona, setPersona] = useState<Persona>('Landlord');
   const [location, setLocation] = useState('');
 
   const helper = useMemo(() => {
@@ -130,7 +155,7 @@ function HeroGetStarted({ onPrefill }) {
       <div className='mt-1 text-sm text-slate-600'>Choose what you need — we’ll guide the next steps.</div>
 
       <div className='mt-4 flex flex-wrap gap-2'>
-        {['Landlord', 'Investor'].map((p) => {
+        {(['Landlord', 'Investor'] as Persona[]).map((p) => {
           const active = persona === p;
           return (
             <button
@@ -157,7 +182,7 @@ function HeroGetStarted({ onPrefill }) {
         <div className='mt-4 grid gap-3'>
           <input
             value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLocation(e.target.value)}
             className='rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-slate-300'
             placeholder='City / area (optional)'
           />
@@ -184,7 +209,11 @@ function HeroGetStarted({ onPrefill }) {
   );
 }
 
-function Hero({ onPrefill }) {
+function Hero({
+  onPrefill,
+}: {
+  onPrefill?: (persona: Persona, location: string) => void;
+}) {
   return (
     <div className='relative overflow-hidden bg-slate-50'>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_8%,rgba(15,23,42,0.14),transparent_48%),radial-gradient(circle_at_88%_18%,rgba(245,158,11,0.10),transparent_42%),radial-gradient(circle_at_50%_92%,rgba(148,163,184,0.12),transparent_50%)]" />
@@ -263,7 +292,7 @@ function VideoSection() {
               preload='metadata'
               controlsList='nodownload'
               disablePictureInPicture
-              onContextMenu={(e) => e.preventDefault()}
+              onContextMenu={(e: React.MouseEvent<HTMLVideoElement>) => e.preventDefault()}
               poster='/intro-poster.jpg'
             >
               <source src='/intro.mp4' type='video/mp4' />
@@ -543,7 +572,7 @@ function About() {
   );
 }
 
-function Contact({ prefill }) {
+function Contact({ prefill }: { prefill: Prefill }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -575,19 +604,19 @@ My goal / context:
           <div className='mt-4 grid gap-3'>
             <input
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
               className='rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-slate-300'
               placeholder='Name'
             />
             <input
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               className='rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-slate-300'
               placeholder='Email'
             />
             <textarea
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}
               className='min-h-[140px] rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-slate-300'
               placeholder='Message'
             />
@@ -636,9 +665,9 @@ My goal / context:
 }
 
 export default function Page() {
-  const [prefill, setPrefill] = useState(null);
+  const [prefill, setPrefill] = useState<Prefill>(null);
 
-  const onPrefill = (persona, location) => {
+  const onPrefill = (persona: Persona, location: string) => {
     setPrefill({ persona, location });
     const el = document.getElementById('contact');
     el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
