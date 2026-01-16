@@ -58,7 +58,7 @@ function Nav() {
           <img
             src="/infinityrg-logo.png"
             alt="Infinity RG logo"
-            className="h-10 w-auto"
+            className="h-16 w-auto"
           />
           <div className="leading-tight">
             <div className="text-sm font-black text-slate-900">Infinity RG</div>
