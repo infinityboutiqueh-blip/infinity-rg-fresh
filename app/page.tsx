@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Infinity RG | Luxury Real Estate & Property Management</title>
-  <meta name="description" content="Infinity RG — luxury real estate and property management. Curated acquisitions, full landlord services, and value strategy." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Infinity RG — luxury real estate and property management. Curated acquisitions, landlord services, and value strategy." />
 
-  <!-- Google Fonts -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
@@ -18,11 +18,11 @@
       --ink:#F5F2EA;
       --muted:#B7B1A6;
       --gold:#B89B5E;
-      --line:rgba(245,242,234,.10);
-      --shadow:0 20px 60px rgba(0,0,0,.45);
+      --line:rgba(245,242,234,.12);
       --radius:18px;
       --max:1120px;
     }
+
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -30,26 +30,29 @@
       background:linear-gradient(180deg,var(--bg),var(--bg2));
       color:var(--ink);
     }
-    a{text-decoration:none;color:inherit}
+
+    a{color:inherit;text-decoration:none}
     .wrap{max-width:var(--max);margin:auto;padding:0 20px}
 
     /* NAV */
     header{
-      position:sticky;top:0;z-index:50;
-      background:rgba(11,13,16,.75);
+      position:sticky;
+      top:0;
+      z-index:10;
+      background:rgba(11,13,16,.8);
       backdrop-filter:blur(10px);
       border-bottom:1px solid var(--line);
     }
     nav{
-      height:72px;
       display:flex;
       justify-content:space-between;
       align-items:center;
+      height:72px;
     }
     .brand{
       font-family:"Playfair Display",serif;
       font-size:20px;
-      letter-spacing:.08em;
+      letter-spacing:.1em;
     }
     .menu a{
       margin:0 12px;
@@ -73,6 +76,11 @@
     .hero{
       padding:70px 0 50px;
     }
+    .hero span{
+      color:var(--gold);
+      letter-spacing:.2em;
+      font-size:12px;
+    }
     .hero h1{
       font-family:"Playfair Display",serif;
       font-size:52px;
@@ -80,8 +88,8 @@
     }
     .hero p{
       max-width:600px;
-      line-height:1.7;
       color:var(--muted);
+      line-height:1.7;
     }
     .hero-actions{margin-top:24px}
     .hero-actions .btn{margin-right:10px}
@@ -96,7 +104,10 @@
       font-size:30px;
       margin-bottom:10px;
     }
-    .sub{color:var(--muted);max-width:700px}
+    .sub{
+      color:var(--muted);
+      max-width:700px;
+    }
 
     /* CARDS */
     .grid3{
@@ -134,7 +145,7 @@
     .prop .body{padding:14px}
 
     /* CONTACT */
-    form{display:grid;gap:10px}
+    form{display:grid;gap:10px;max-width:500px}
     input,textarea{
       padding:12px;
       border-radius:12px;
@@ -145,9 +156,9 @@
 
     footer{
       padding:30px 0;
+      border-top:1px solid var(--line);
       color:var(--muted);
       font-size:12px;
-      border-top:1px solid var(--line);
     }
 
     @media(max-width:900px){
@@ -178,103 +189,73 @@
 
 <main class="wrap">
 
-  <!-- HERO -->
-  <section class="hero">
-    <span style="color:var(--gold);letter-spacing:.2em;font-size:12px">
-      LUXURY REAL ESTATE & PROPERTY MANAGEMENT
-    </span>
-    <h1>Premium property, handled end-to-end — discreetly.</h1>
-    <p>
-      Infinity RG delivers curated acquisitions, full landlord services,
-      and value-driven strategies for clients who demand trust and execution.
-    </p>
-    <div class="hero-actions">
-      <a class="btn primary" href="#properties">Explore Properties</a>
-      <a class="btn" href="#services">View Services</a>
+<section class="hero">
+  <span>LUXURY REAL ESTATE & PROPERTY MANAGEMENT</span>
+  <h1>Premium property, handled end-to-end — discreetly.</h1>
+  <p>
+    Infinity RG delivers curated acquisitions, full landlord services,
+    and value-driven strategies for clients who demand trust and execution.
+  </p>
+  <div class="hero-actions">
+    <a class="btn primary" href="#properties">Explore Properties</a>
+    <a class="btn" href="#services">View Services</a>
+  </div>
+</section>
+
+<section id="properties">
+  <h2>Featured Properties</h2>
+  <p class="sub">A curated selection. Quality over quantity.</p>
+
+  <div class="props">
+    <div class="prop">
+      <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858">
+      <div class="body"><strong>Modern City Apartment</strong><br><small>Prime location</small></div>
     </div>
-  </section>
-
-  <!-- PROPERTIES -->
-  <section id="properties">
-    <h2>Featured Properties</h2>
-    <p class="sub">A curated selection. Quality over quantity.</p>
-
-    <div class="props">
-      <div class="prop">
-        <img src="https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1200&q=70">
-        <div class="body">
-          <strong>Modern City Apartment</strong><br>
-          <small>Prime location · Turn-key</small>
-        </div>
-      </div>
-
-      <div class="prop">
-        <img src="https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?auto=format&fit=crop&w=1200&q=70">
-        <div class="body">
-          <strong>Architectural Villa</strong><br>
-          <small>Privacy · Premium finish</small>
-        </div>
-      </div>
-
-      <div class="prop">
-        <img src="https://images.unsplash.com/photo-1501183638710-841dd1904471?auto=format&fit=crop&w=1200&q=70">
-        <div class="body">
-          <strong>Investment-Grade Home</strong><br>
-          <small>Value upside · Strong fundamentals</small>
-        </div>
-      </div>
+    <div class="prop">
+      <img src="https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6">
+      <div class="body"><strong>Architectural Villa</strong><br><small>Privacy & lifestyle</small></div>
     </div>
-  </section>
-
-  <!-- SERVICES -->
-  <section id="services">
-    <h2>Services</h2>
-    <div class="grid3">
-      <div class="card">
-        <h3>Luxury Sales & Acquisition</h3>
-        <p>Discreet negotiation, due diligence coordination, and deal execution.</p>
-      </div>
-      <div class="card">
-        <h3>Property Management</h3>
-        <p>Landlord services including contracts, maintenance, and reporting.</p>
-      </div>
-      <div class="card">
-        <h3>Buy-Refurb-Rent / Sell</h3>
-        <p>Refurb planning and execution focused on value creation.</p>
-      </div>
+    <div class="prop">
+      <img src="https://images.unsplash.com/photo-1501183638710-841dd1904471">
+      <div class="body"><strong>Investment-Grade Home</strong><br><small>Value upside</small></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- ABOUT -->
-  <section id="about">
-    <h2>About Infinity RG</h2>
-    <p class="sub">
-      Built for clients who value trust, discretion, and results.
-      Boutique service. Clear process. Professional execution.
-    </p>
-  </section>
+<section id="services">
+  <h2>Services</h2>
+  <div class="grid3">
+    <div class="card"><h3>Luxury Sales & Acquisition</h3><p>Discreet negotiation and deal execution.</p></div>
+    <div class="card"><h3>Property Management</h3><p>Landlord services with reporting and oversight.</p></div>
+    <div class="card"><h3>Buy-Refurb-Rent / Sell</h3><p>Value-driven refurbishment strategies.</p></div>
+  </div>
+</section>
 
-  <!-- INVESTORS -->
-  <section id="investors">
-    <h2>Investors</h2>
-    <p class="sub">
-      Structured opportunities focused on income, value uplift, and transparency.
-    </p>
-    <a class="btn primary" href="#contact">Request Opportunities</a>
-  </section>
+<section id="about">
+  <h2>About Infinity RG</h2>
+  <p class="sub">
+    Built for clients who value trust, discretion, and results.
+    Boutique service with professional execution.
+  </p>
+</section>
 
-  <!-- CONTACT -->
-  <section id="contact">
-    <h2>Contact</h2>
-    <p class="sub">Private consultation — online or in person.</p>
+<section id="investors">
+  <h2>Investors</h2>
+  <p class="sub">Structured opportunities focused on income and value uplift.</p>
+  <a class="btn primary" href="#contact">Request Opportunities</a>
+</section>
 
-    <form>
-      <input placeholder="Full name" required>
-      <input type="email" placeholder="Email" required>
-      <textarea placeholder="How can we help?" required></textarea>
-      <button class="btn primary">Send message</button>
-    </form>
-  </section>
+<section id="contact">
+  <h2>Contact</h2>
+  <p class="sub">Private consultation — online or in person.</p>
+
+  <form>
+    <input placeholder="Full name" required>
+    <input type="email" placeholder="Email" required>
+    <textarea placeholder="How can we help?" required></textarea>
+    <button class="btn primary">Send message</button>
+  </form>
+</section>
 
 </main>
 
